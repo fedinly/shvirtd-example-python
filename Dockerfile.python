@@ -2,7 +2,7 @@ FROM python:3.12-slim as builder
 WORKDIR /app
 
 RUN apt-get update && \
-        apt-get install -y git iputils-ping psmisc && \
+        apt-get install -y git && \
         mkdir -p ~/.ssh/ && \
         ssh-keyscan github.com >> ~/.ssh/known_hosts
 
@@ -11,9 +11,10 @@ RUN python -m venv /app/venv
 
 ENV PATH="/app/venv/bin:$PATH"
 
-RUN --mount=type=ssh git clone git@github.com:fedinly/shvirtd-example-python.git
+RUN git clone https://github.com/fedinly/shvirtd-example-python.git temp
+#RUN --mount=type=ssh git clone git@github.com:fedinly/shvirtd-example-python.git temp
 
-RUN --mount=type=cache,target=~/.cache/pip pip install --upgrade pip && pip install -r shvirtd-example-python/requirements.txt
+RUN --mount=type=cache,target=~/.cache/pip pip install --upgrade pip && pip install -r temp/requirements.txt
 
 
 
@@ -27,7 +28,7 @@ USER python
 COPY --chown=python:python --from=builder /app/venv ./venv
 #COPY --from=builder /app/venv ./venv
 #COPY --from=builder /app/shvirtd-example-python ./
-COPY --chown=python:python --from=builder /app/shvirtd-example-python ./
+COPY --chown=python:python --from=builder /app/temp ./
 COPY --chown=python:python . .
 #COPY . .
 
