@@ -35,6 +35,7 @@ services:
       - DB_USER=${MYSQL_USER}
       - DB_PASSWORD=${MYSQL_PASSWORD}
       - DB_HOST=db
+      - DB_TBL_NAME=entries
 volumes:
   db_data: {}
 networks:
