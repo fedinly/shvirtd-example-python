@@ -1,0 +1,5 @@
+#!/bin/sh
+
+now=$(date +"%s_%Y-%m-%d")
+pw=cat ./secrets/db_backup_pw.txt
+/usr/bin/mysqldump --opt -h ${MYSQL_HOST} -u ${MYSQL_BACKUPER_USER} -p${pw} ${MYSQL_DATABASE} > "/backup/${now}_${MYSQL_DATABASE}.sql"

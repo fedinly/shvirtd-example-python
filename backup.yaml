@@ -1,0 +1,42 @@
+x-env_file: &env_file
+  env_file:
+    - .env
+x-restart: &restart
+  restart: always #no, on-failure , always(default), unless-stopped
+
+services:
+  cron:
+    image: schnitzler/mysqldump
+    restart: always
+    volumes:
+      - ./backup/crontab:/var/spool/cron/crontabs/root
+      - ./backup/backup:/usr/local/bin/backup
+    volumes_from:
+      - backup
+    command: ["-l", "8", "-d", "8"]
+    depends_on: ["db"]
+    networks:
+      backend:
+    <<: [*env_file, *restart]
+    environment:
+      MYSQL_HOST: db
+      MYSQL_BACKUPER_USER: ${MYSQL_BACKUPER_USER}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+    secrets:
+      - db_backup_pw
+  backup:
+    image: busybox
+    volumes:
+      - /opt/backup:/backup
+    depends_on: ["db"]
+    networks:
+      backend:
+networks:
+  backend:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/24
+secrets:
+  db_backup_pw:
+    file: ./secrets/db_backup_pw.txt
