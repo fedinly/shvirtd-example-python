@@ -1,0 +1,4 @@
+CREATE USER IF NOT EXISTS 'backup-04'@'%' IDENTIFIED WITH mysql_native_password BY 'Sd23gf-d1V';
+GRANT ALL PRIVILEGES ON virtd.* TO 'backup-04'@'%' WITH GRANT OPTION;
+FLUSH PRIVILEGES;
+exit
