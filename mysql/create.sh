@@ -1,6 +1,6 @@
 #!/bin/bash
-pw= (cat ./secrets/db_root_pw.txt)
-pwb= (cat ./secrets/db_backup_pw.txt)
+pw=$(<"/run/secrets/db_root_pw")
+pwb=$(<"/run/secrets/db_backup_pw")
 set -e
 
 mysql -u root -p$pw <<EOSQL
