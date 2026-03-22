@@ -11,9 +11,19 @@ from typing import Optional
 # Считываем конфигурацию БД из переменных окружения
 db_host = os.environ.get('DB_HOST', '127.0.0.1')
 db_user = os.environ.get('DB_USER', 'app')
-db_password = os.environ.get('DB_PASSWORD', 'very_strong')
+#db_password = os.environ.get('DB_PASSWORD', 'very_strong')
 db_name = os.environ.get('DB_NAME', 'example')
 db_table_name = os.environ.get('DB_TBL_NAME', 'entries')
+
+#----Чтение секрета------
+def get_secret(secret_name):
+    try:
+        with open(f"/run/secrets/{secret_name}", 'r') as f:
+            return f.read().strip()
+    except IOError:
+        return os.getenv(secret_name, 'default_value') # Fallback if needed
+
+db_password = get_secret("db_user_pw")
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
